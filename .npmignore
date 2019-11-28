@@ -1,0 +1,13 @@
+test/
+src/
+data/
+
+.git*
+.jshintrc
+.jscsrc
+
+tslint.json
+tsconfig.json
+rollup.config.ts
+jest.config.json
+.eslintrc.js
