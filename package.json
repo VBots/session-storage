@@ -1,0 +1,16 @@
+{
+  "name": "@vbots/session-storage",
+  "version": "0.0.1",
+  "description": "SessinStorage Add-on for Session vk-io library",
+  "author": "xTCry (Vladislav Kh)",
+  "license": "MIT",
+  "peerDependencies": {
+    "@vk-io/session": "^0.0.0-alpha.3",
+    "vk-io": "^4.0.0-rc.29"
+  },
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "lodash-id": "^0.14.0",
+    "lowdb": "^1.0.0"
+  }
+}
