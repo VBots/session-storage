@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "pubfix": "npm version patch && npm publish --access public",
-    "publish": "yarn run prepare && npm publish --access public",
+    "pub_": "yarn run prepare && npm publish --access public",
     "prepare": "yarn run rollup:build && yarn run test",
     "build": "yarn run rollup:build",
     "watch": "yarn run rollup:build -w",

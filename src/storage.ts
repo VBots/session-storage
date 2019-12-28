@@ -18,6 +18,7 @@ export interface IMemoryStorageOptions {
     path: string;
     pathFile: string;
     defaultValue: any;
+    defaultStoreName: string;
     store: Lowdb.LowdbAsync<any>;
 }
 
@@ -26,17 +27,19 @@ export default class SessionStorage implements ISessionStorage {
 	public path: IMemoryStorageOptions['path'];
 	public pathFile: IMemoryStorageOptions['pathFile'];
 	public defaultValue: IMemoryStorageOptions['defaultValue'];
+	public defaultStoreName: IMemoryStorageOptions['defaultStoreName'];
 	private store: IMemoryStorageOptions['store'] | null;
 
     /**
      * 
      */
-	constructor({ name = 'dbOne', path = './data/', defaultValue = {} }: Partial<IMemoryStorageOptions> = {}) {
+	constructor({ name = 'dbOne', path = './data/', defaultValue = {}, defaultStoreName = 'users' }: Partial<IMemoryStorageOptions> = {}) {
 		this.name = name;
 
 		this.path = Path.normalize(path);
 		this.pathFile = Path.resolve(this.path, `${this.name}.json`);
         this.defaultValue = defaultValue;
+        this.defaultStoreName = defaultStoreName;
         this.store = null;
 	}
 
@@ -54,25 +57,36 @@ export default class SessionStorage implements ISessionStorage {
 		this.store = await Lowdb(adapter);
         this.store._.mixin(lodashId);
         
-        await this.store.defaults({ users: [] }).write();
+        await this.store.defaults({ [this.defaultStoreName]: [] }).write();
 	}
 
     /**
-     * Get users collection
+     * Get store collection
      */
-    get users(): any {
-        return this.store!.get('users');
-    }
+    async storeByName(name: string, defaultValue: any = this.defaultValue) {
+		if(!this.store!.has(name).value()) {
+			await this.store!.set(name, defaultValue).write();
+		}
+        return this.store!.get(name);
+	}
+	
+	getStore() {
+		return this.store;
+	}
+
+    get defaultStore(): any {
+        return this.store!.get(this.defaultStoreName);
+	}
     
     get size() {
-        return this.users.size().value();
+        return this.defaultStore.size().value();
     }
 
 	async get(key: string) {
-        const userData = await this.users.getById(key);
+        const storeData = await this.defaultStore.getById(key);
         const { data } =
-			userData.value() ||
-			(await this.users
+			storeData.value() ||
+			(await this.defaultStore
 				.insert({
 					id: key,
 					data: this.defaultValue,
@@ -83,27 +97,28 @@ export default class SessionStorage implements ISessionStorage {
 		return data;
 	}
 
-	async set(key: string, value: any) {        
-        let isExist = this.users.getById(key).value();
+	async set(key: string, value: any, storeName: string | null = null) {
+		const store = storeName ? (await this.storeByName(storeName)) : this.defaultStore;
+        let isExist = store.getById(key).value();
         let collect = null;
 
         if(isExist) {
-            collect = this.users.updateById(key, { data: value, action: 'updated_set' });
+            collect = store.updateById(key, { data: value, action: 'updated_set' });
         }
         else {
-            collect = this.users.insert({ id: key, data: value, action: 'created_set' });
+            collect = store.insert({ id: key, data: value, action: 'created_set' });
         }
 
         const { data } = await collect.write();
-		return data;
+		return !!data;
 	}
 
 	async delete(key: string) {
-        const { data } = this.users.removeById(key).write() || {};
-		return data;
+        const { data } = this.defaultStore.removeById(key).write() || {};
+		return !!data;
 	}
 
-	async touch() {
-        
+	async touch(key: string) {
+        await this.get(key);
 	}
 }

@@ -1,4 +1,5 @@
 import Fs from 'fs-extra';
+import assert from 'assert';
 import { SessionStorage } from "../src";
 
 const zleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -35,10 +36,10 @@ describe('SessionStorage', (): void => {
 
             await writeFile('F0');
             
-            let steps = 0;
+            let steps = 2;
             writeFile('F1').then(() => { steps++; });
-            writeFile('F2').then(() => { steps++; });
-            writeFile('F3').then(() => { steps++; });
+            // writeFile('F2').then(() => { steps++; });
+            // writeFile('F3').then(() => { steps++; });
 
             await new Promise(async resolve => {
 				for (; steps < 3; ) {
@@ -51,24 +52,41 @@ describe('SessionStorage', (): void => {
         it("Test #2", async (): Promise<void> => {
             // ...
             let getData = await testStorage.get(`user_xxx`);
-            console.log('getData', getData);
+            assert.deepEqual(getData, {});
+            await testStorage.set(`nextData`, { a: 22 });
 
+            let time = Date.now();
             let setData = await testStorage.set(`user_xxx`, {
                 name: `T-34`,
-                time: Date.now()
+                time
             });
-            console.log('setData', setData);
+            assert.equal(setData, true);
             
             let getData2 = await testStorage.get(`user_xxx`);
-            console.log('getData2', getData2);
+            assert.deepEqual(getData2, { name: 'T-34', time });
             
             await zleep(1e3);
             
             let deleteData = await testStorage.delete(`user_xxx`);
-            console.log('deleteData', deleteData);
+            assert.equal(deleteData, false);
             
             let deleteData2 = await testStorage.delete(`user_xxx_Y`);
-            console.log('deleteData2', deleteData2);
+            assert.equal(deleteData2, false);
+        });
+       
+        it("Test #3", async (): Promise<void> => {
+            // ...
+            let myStoreData = await testStorage.storeByName('myStore', []);
+            assert.deepEqual(myStoreData.value(), []);
+            
+            await testStorage.set('testID', [123, 321], 'myStore');
+            assert.equal(testStorage.getStore()!.has('myStore').value(), true);
+            myStoreData = await testStorage.storeByName('myStore');
+            
+            assert.deepEqual(myStoreData.value(), [{"action": "created_set", "data": [123, 321], "id": "testID"}]);
+
+            await testStorage.getStore()!.set('myStore[0].id', 'helloW').write();
+            assert.deepEqual(myStoreData.value(), [{"action": "created_set", "data": [123, 321], "id": "helloW"}]);
         });
     });
 
