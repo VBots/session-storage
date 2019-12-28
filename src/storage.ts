@@ -67,9 +67,9 @@ export default class SessionStorage implements ISessionStorage {
 	/**
 	 * Get store collection
 	 */
-	async storeByName(name: string, defaultValue: any = []) {
+	async storeByName(name: string) {
 		if (!this.store!.has(name).value()) {
-			await this.store!.set(name, defaultValue).write();
+			await this.store!.set(name, []).write();
 		}
 		return this.store!.get(name);
 	}
@@ -86,7 +86,7 @@ export default class SessionStorage implements ISessionStorage {
 		return this.defaultStore.size().value();
 	}
 
-	async get(key: string, storeName: string | null = null) {
+	async get(key: string, storeName: string | null = null, defaultValue: any = this.defaultValue) {
 		const store = storeName ? await this.storeByName(storeName) : this.defaultStore;
 		const storeData = await store.getById(key);
 		const { data } =
@@ -94,7 +94,7 @@ export default class SessionStorage implements ISessionStorage {
 			(await store
 				.insert({
 					id: key,
-					data: this.defaultValue,
+					data: defaultValue,
 					action: 'created_get'
 				})
 				.write());
