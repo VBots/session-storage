@@ -3,7 +3,7 @@
 [![NPM version][npm-v]][npm-url]
 [![Used][used-by]][npm-url]
 [![Dependencies][deps]][deps-url]
-[![Build Status][build]][build-url]
+<!-- [![Build Status][build]][build-url] -->
 
 
 > Powered by [Lowdb](https://github.com/typicode/lowdb)
