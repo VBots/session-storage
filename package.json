@@ -1,11 +1,11 @@
 {
   "name": "@vbots/session-storage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SessinStorage Add-on for Session vk-io library",
   "main": "lib/index",
   "module": "lib/index.mjs",
   "types": "lib/index.d.ts",
-  "author": "xTCry (Vladislav Kh)",
+  "author": "xTCry [Vladislav Kh] (https://github.com/xTCry/)",
   "license": "MIT",
   "scripts": {
     "up": "npm version patch",
@@ -22,19 +22,17 @@
     "vk-io": "^4.0.x"
   },
   "dependencies": {
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.0.1",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
     "yargs": "^16.0.3"
   },
   "devDependencies": {
-    "@types/fs-extra": "^8.0.1",
+    "@types/fs-extra": "^9.0.1",
     "@types/jest": "^24.0.21",
     "@types/lowdb": "^1.0.9",
-    "@types/node": "^12.12.3",
+    "@types/node": "^14.10.1",
     "@types/rollup-plugin-json": "^3.0.2",
-    "@types/tough-cookie": "^2.3.5",
-    "@types/ws": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^2.6.0",
     "@typescript-eslint/parser": "^2.6.0",
     "@vk-io/session": ">=0.0.0-alpha.3 <=2.0.0",

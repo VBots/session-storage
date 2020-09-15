@@ -1,11 +1,10 @@
 {
     "compilerOptions": {
-        "module": "esnext",
         "target": "esnext",
-        "lib": ["esnext"],
-		"strict": true,
-		"noEmit": true,
-		"declaration": true,
+        "module": "commonjs",
+        "strict": true,
+        "noEmit": true,
+        "declaration": true,
         "esModuleInterop": true,
         "noImplicitAny": true,
         "moduleResolution": "node",

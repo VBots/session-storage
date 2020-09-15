@@ -27,7 +27,7 @@ export default class SessionStorage implements ISessionStorage {
 	public pathFile: IMemoryStorageOptions['pathFile'];
 	public defaultValue: IMemoryStorageOptions['defaultValue'];
 	public defaultStoreName: IMemoryStorageOptions['defaultStoreName'];
-	private store: IMemoryStorageOptions['store'] | null;
+	private store?: IMemoryStorageOptions['store'];
 
 	/**
 	 *
@@ -44,7 +44,6 @@ export default class SessionStorage implements ISessionStorage {
 		this.pathFile = Path.resolve(this.path, `${this.name}.json`);
 		this.defaultValue = defaultValue;
 		this.defaultStoreName = defaultStoreName;
-		this.store = null;
 	}
 
 	/**
@@ -86,7 +85,7 @@ export default class SessionStorage implements ISessionStorage {
 		return this.defaultStore.size().value();
 	}
 
-	async get(key: string, storeName: string | null = null, defaultValue: any = this.defaultValue) {
+	async get(key: string, storeName?: string, defaultValue: any = this.defaultValue) {
 		const store = storeName ? await this.storeByName(storeName) : this.defaultStore;
 		const storeData = await store.getById(key);
 		const { data } =
@@ -102,7 +101,7 @@ export default class SessionStorage implements ISessionStorage {
 		return data;
 	}
 
-	async set(key: string, value: any, storeName: string | null = null) {
+	async set(key: string, value: any, storeName?: string) {
 		const store = storeName ? await this.storeByName(storeName) : this.defaultStore;
 		let isExist = store.getById(key).value();
 		let collect = null;
