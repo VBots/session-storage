@@ -77,7 +77,7 @@ describe('SessionStorage', (): void => {
 
 		it('Test #3', async (): Promise<void> => {
 			// ...
-			let myStoreData = await testStorage.storeByName('myStore', []);
+			let myStoreData = await testStorage.storeByName('myStore');
 			assert.deepEqual(myStoreData.value(), []);
 
 			await testStorage.set('testID', [123, 321], 'myStore');
