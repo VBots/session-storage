@@ -9,7 +9,11 @@
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
-        "outDir": "lib"
+        "outDir": "lib",
+        "types": [
+          "node",
+          "jest"
+        ]
     },
     "include": [
         "./src/"
